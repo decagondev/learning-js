@@ -1,0 +1,80 @@
+// helper function to get the factors 
+//ready for the abundant number function
+let getFactors = function(num) {
+    let facts = [];
+
+    let possFactor = 1;
+    let sqrt = Math.sqrt(num);
+    while(possFactor <= sqrt) {
+        if(num % possFactor == 0) {
+            facts[facts.length] = possFactor;
+            let anotherPosFactor = num / possFactor;
+            if(anotherPosFactor > possFactor) {
+                facts[facts.length] = anotherPosFactor;
+            }
+        }
+        possFactor++;
+    }
+    return facts;
+};
+
+// helper function that returns the abundant numbers 
+//for the sumOfNonAbundant Numbers
+let getAbdNum = function(limit) {
+    let abNumbers = [];
+    for(var i = 12; i <= limit; i++) {
+        let facts = getFactors(i);
+        let factSum = 0;
+        for(let fact, j = 0; fact = facts[j]; j++) {
+            if(i != fact) {
+                factSum += fact;
+            }
+        }
+        if(factSum > i) {
+            abNumbers.push(i);
+        }
+    }
+    return abNumbers;
+}
+
+
+// the main function in this file
+let sumOfNonAbNumber = function(maxNumC) {
+    let abNums = getAbdNum(maxNumC);
+
+    let sum = 0;
+
+    for(let testN = 1; testN <= maxNumC; testN++) {
+        let sumbool = false;
+        for(let i = 0, j = abNums.length - 1, abnum1; abnum1 = abNums[i]; i++) {
+            if(abnum1 > testN) {
+                break;
+            }
+
+            let abnum2 = abNums[j];
+            while((j > 0) && ((abnum1 + abnum2) > testN)) {
+                abnum2 = abNums[--j];
+            }
+
+            if((abnum1 + abnum2) == testN) {
+                sumbool = true;
+                break;
+            }
+        }
+        if(!sumbool) {
+            sum += testN;
+        }
+    }
+    return sum;
+}
+
+// UNIT tests
+let tests = [];
+tests[0] = (sumOfNonAbNumber(5000) === 2035227 ? '5000 test passed' : '5000 test failed!') // ---> 2035227
+tests[1] = (sumOfNonAbNumber(10000) === 3731004 ? '10000 test passed' : '10000 test failed!') // ---> 3731004
+
+
+for(let i = 0; i < tests.length; i++) {
+    console.log("running test [" + (i + 1) + "]");
+    console.log(tests[i]);
+}
